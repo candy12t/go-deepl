@@ -9,5 +9,5 @@
 - [ ] translate text
 - [ ] translate documents
 - [ ] manage glossaries
-- [ ] check usage and limits
+- [x] check usage and limits
 - [ ] retrieve supported languages
