@@ -11,9 +11,13 @@ import (
 )
 
 const (
+	Version = "v0.0.1"
+
 	ProAPIHost  = "https://api.deepl.com"
 	FreeAPIHost = "https://api-free.deepl.com"
 	APIVersion  = "v2"
+
+	defaultUserAgent = "go-deepl" + "/" + Version + " (https://https://github.com/candy12t/go-deepl)"
 
 	accountPlanIdentifyKey = ":fx"
 )
@@ -22,13 +26,15 @@ type Client struct {
 	HTTPClient *http.Client
 	BaseURL    string
 	AuthKey    string
+	UserAgent  string
 }
 
 func NewClient(authKey string) *Client {
 	baseURL, _ := url.JoinPath(apiHost(authKey), APIVersion)
 	return &Client{
-		BaseURL: baseURL,
-		AuthKey: authKey,
+		BaseURL:   baseURL,
+		AuthKey:   authKey,
+		UserAgent: defaultUserAgent,
 	}
 }
 
@@ -54,6 +60,7 @@ func (c *Client) NewRequest(ctx context.Context, method, path string, body io.Re
 		return nil, err
 	}
 	req.Header.Set("Authorization", fmt.Sprintf("DeepL-Auth-Key %s", c.AuthKey))
+	req.Header.Set("User-Agent", c.UserAgent)
 
 	return req, nil
 }
