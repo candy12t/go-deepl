@@ -20,7 +20,7 @@ func Test_NewClient(t *testing.T) {
 	for name, tt := range tests {
 		t.Run(name, func(t *testing.T) {
 			c := NewClient(tt.authKey)
-			if got := c.BaseURL; got != tt.wantBaseURL {
+			if got := c.BaseURL.String(); got != tt.wantBaseURL {
 				t.Errorf("NewClient(%q).BaseURL is %v, want %v", tt.authKey, got, tt.wantBaseURL)
 			}
 		})

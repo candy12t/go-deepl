@@ -24,13 +24,14 @@ const (
 
 type Client struct {
 	HTTPClient *http.Client
-	BaseURL    string
+	BaseURL    *url.URL
 	AuthKey    string
 	UserAgent  string
 }
 
 func NewClient(authKey string) *Client {
-	baseURL, _ := url.JoinPath(apiHost(authKey), APIVersion)
+	u, _ := url.Parse(apiHost(authKey))
+	baseURL := u.JoinPath(APIVersion)
 	return &Client{
 		BaseURL:   baseURL,
 		AuthKey:   authKey,
@@ -49,13 +50,11 @@ func apiHost(authKey string) string {
 	return ProAPIHost
 }
 
-func (c *Client) NewRequest(ctx context.Context, method, path string, body io.Reader) (*http.Request, error) {
-	u, err := url.JoinPath(c.BaseURL, path)
-	if err != nil {
-		return nil, err
-	}
+func (c *Client) NewRequest(ctx context.Context, method, path string, query url.Values, body io.Reader) (*http.Request, error) {
+	u := c.BaseURL.JoinPath(path)
+	u.RawQuery = query.Encode()
 
-	req, err := http.NewRequestWithContext(ctx, method, u, body)
+	req, err := http.NewRequestWithContext(ctx, method, u.String(), body)
 	if err != nil {
 		return nil, err
 	}
@@ -77,10 +76,14 @@ func (c *Client) Do(req *http.Request, v any) (*http.Response, error) {
 		return nil, HandleHTTPError(resp)
 	}
 
-	if err := json.NewDecoder(resp.Body).Decode(v); err != nil {
-		return nil, err
+	if v == nil {
+		if _, err := io.ReadAll(resp.Body); err != nil {
+			return nil, err
+		}
+		return resp, nil
 	}
-	return resp, nil
+
+	return resp, json.NewDecoder(resp.Body).Decode(v)
 }
 
 func (c *Client) httpClient() *http.Client {
