@@ -2,7 +2,6 @@ package deepl
 
 import (
 	"context"
-	"net/http"
 )
 
 type Usage struct {
@@ -15,13 +14,8 @@ type Usage struct {
 }
 
 func (c *Client) GetUsage(ctx context.Context) (*Usage, error) {
-	req, err := c.NewRequest(ctx, http.MethodGet, "/usage", nil, nil)
-	if err != nil {
-		return nil, err
-	}
-
 	usage := new(Usage)
-	if _, err := c.Do(req, usage); err != nil {
+	if _, err := c.Get(ctx, "/usage", nil, usage); err != nil {
 		return nil, err
 	}
 	return usage, nil

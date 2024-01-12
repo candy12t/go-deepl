@@ -92,3 +92,33 @@ func (c *Client) httpClient() *http.Client {
 	}
 	return http.DefaultClient
 }
+
+func (c *Client) Get(ctx context.Context, path string, query url.Values, v any) (*http.Response, error) {
+	req, err := c.NewRequest(ctx, http.MethodGet, path, query, nil)
+	if err != nil {
+		return nil, err
+	}
+	return c.Do(req, v)
+}
+
+func (c *Client) Post(ctx context.Context, path string, body io.Reader, v any) (*http.Response, error) {
+	req, err := c.NewRequest(ctx, http.MethodPost, path, nil, body)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	return c.Do(req, v)
+}
+
+// TODO
+func (c *Client) UploadFile(ctx context.Context, path string, body io.Reader, v any) (*http.Response, error) {
+	return nil, nil
+}
+
+func (c *Client) Delete(ctx context.Context, path string) (*http.Response, error) {
+	req, err := c.NewRequest(ctx, http.MethodDelete, path, nil, nil)
+	if err != nil {
+		return nil, err
+	}
+	return c.Do(req, nil)
+}
