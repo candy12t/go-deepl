@@ -45,9 +45,9 @@ func main() {
 
 ### Translate Documents
 
-- [ ] POST /v2/document
-- [ ] POST /v2/document/{document_id}
-- [ ] POST /v2/document/{document_id}/result
+- [x] POST /v2/document
+- [x] POST /v2/document/{document_id}
+- [x] POST /v2/document/{document_id}/result
 
 ### Manage Glossaries
 
