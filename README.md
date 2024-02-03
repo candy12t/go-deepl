@@ -2,6 +2,12 @@
 
 Unofficial DeepL API client for Go.
 
+## Install
+
+```
+go get -u github.com/candy12t/go-deepl@latest
+```
+
 ## Usage
 
 ```go
@@ -62,3 +68,7 @@ func main() {
 
 - [x] GET /v2/usage
 - [x] GET /v2/languages
+
+## License
+
+MIT License
